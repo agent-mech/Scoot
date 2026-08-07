@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle Terminal</title>
+  <style>
+    :root {
+      --bg: #07090e;
+      --card-bg: rgba(18, 24, 38, 0.75);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-green: #10b981;
+      --accent-green-glow: rgba(16, 185, 129, 0.35);
+      --accent-green-hover: #059669;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --input-bg: rgba(255, 255, 255, 0.05);
+      --input-border: rgba(255, 255, 255, 0.12);
+      --danger: #ff453a;
+      --danger-bg: rgba(255, 69, 58, 0.15);
+      --warning: #ffd60a;
+      --console-bg: rgba(3, 7, 14, 0.9);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 15%, #0f2d24 0%, var(--bg) 70%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      width: 100%;
+      max-width: 420px;
+      padding: 2.25rem 2rem;
+      border-radius: 2rem;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(16, 185, 129, 0.06);
+      text-align: center;
+      position: relative;
+    }
+
+    .icon-container {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--accent-green) 0%, #047857 100%);
+      border-radius: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem auto;
+      box-shadow: 0 0 24px var(--accent-green-glow);
+    }
+
+    .icon-container svg {
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.35rem;
+    }
+
+    p {
+      color: var(--text-sub);
+      font-size: 0.875rem;
+      font-weight: 400;
+      margin-bottom: 1.75rem;
+      line-height: 1.4;
+    }
+
+    .input-group {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    label {
+      font-size: 0.725rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: block;
+      margin-bottom: 0.4rem;
+      margin-left: 0.2rem;
+    }
+
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      padding: 0.9rem 1.1rem;
+      border-radius: 1.1rem;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    input:focus {
+      border-color: var(--accent-green);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 16px var(--accent-green-glow);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.95rem 1.2rem;
+      border-radius: 1.1rem;
+      border: none;
+      background: var(--accent-green);
+      color: #022c22;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-bottom: 0.75rem;
+      box-shadow: 0 4px 20px var(--accent-green-glow);
+    }
+
+    button:hover {
+      background: var(--accent-green-hover);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      box-shadow: none;
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: var(--text-main);
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid rgba(255, 69, 58, 0.3);
+      box-shadow: none;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #ffffff;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 2rem;
+      font-size: 0.775rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-sub);
+    }
+
+    .status-pill.unverified .status-dot { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
+    .status-pill.verified .status-dot { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+
+    .console-box {
+      background: var(--console-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
+      padding: 0.85rem 1rem;
+      font-family: "SF Mono", SFMono-Regular, ui-monospace, Menlo, monospace;
+      font-size: 0.75rem;
+      color: #38bdf8;
+      text-align: left;
+      height: 140px;
+      overflow-y: auto;
+      margin-top: 1.25rem;
+      line-height: 1.5;
+    }
+
+    .console-entry { margin-bottom: 0.25rem; word-break: break-all; }
+    .console-entry.success { color: var(--accent-green); }
+    .console-entry.error { color: var(--danger); }
+    .console-entry.warn { color: var(--warning); }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .action-grid button {
+      padding: 0.8rem 0.5rem;
+      font-size: 0.825rem;
+      margin-bottom: 0;
+    }
+
+    .flex-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .flex-row input { flex: 1; }
+    .flex-row button { width: auto; white-space: nowrap; margin-bottom: 0; }
+
+    .error-msg {
+      color: var(--danger);
+      font-size: 0.825rem;
+      font-weight: 500;
+      margin-top: 1rem;
+      min-height: 1.2rem;
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="icon-container">
+      <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-5.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+    </div>
+
+    <!-- View 1: Password Lock -->
+    <div id="login-view">
+      <h1>Access Control</h1>
+      <p>Enter passcode to authorize session</p>
+      <form id="login-form">
+        <div class="input-group">
+          <label for="password">Passcode</label>
+          <input type="password" id="password" placeholder="Passcode" required>
+        </div>
+        <button type="submit">Authenticate</button>
+      </form>
+    </div>
+
+    <!-- View 2: Connect View -->
+    <div id="connect-view" class="hidden">
+      <h1>Connect System</h1>
+      <p>Pair with IoT device or custom service key</p>
+      
+      <div class="input-group">
+        <label for="custom-key-input">Custom Service Key (Optional)</label>
+        <input type="text" id="custom-key-input" placeholder="e.g. FFE0 or leave blank">
+      </div>
+
+      <button id="btn-connect">Connect via Bluetooth</button>
+    </div>
+
+    <!-- View 3: Dashboard -->
+    <div id="controls-view" class="hidden">
+      <h1>Control Hub</h1>
+      <div id="status-pill" class="status-pill unverified">
+        <span class="status-dot"></span>
+        <span id="status-text">Unverified Hardware</span>
+      </div>
+      
+      <div class="action-grid">
+        <button id="btn-unlock">Unlock</button>
+        <button id="btn-lock" class="btn-danger">Lock</button>
+        <button id="btn-battery" class="btn-secondary">Hatch</button>
+      </div>
+
+      <button id="btn-inspect" class="btn-secondary" style="font-size: 0.8rem;">Scan & Verify Control Services</button>
+      
+      <div class="flex-row">
+        <input type="text" id="raw-hex-input" placeholder="Hex byte payload (e.g. 67)">
+        <button id="btn-send-raw" class="btn-secondary">Inject</button>
+      </div>
+
+      <button id="btn-disconnect" style="background: transparent; color: var(--text-sub); font-size: 0.8rem; margin-bottom: 0; box-shadow: none;">Disconnect Link</button>
+
+      <div class="console-box" id="activity-console"></div>
+    </div>
+
+    <div id="error-message" class="error-msg"></div>
+  </div>
+
+  <script>
+    const PRESETS = [
+      { service: "0000ffe0-0000-1000-8000-00805f9b34fb", char: "0000ffe1-0000-1000-8000-00805f9b34fb" },
+      { service: "6e400001-b5a3-f393-e0a9-e50e24dcca9e", char: "6e400002-b5a3-f393-e0a9-e50e24dcca9e" },
+      { service: "0000ffe5-0000-1000-8000-00805f9b34fb", char: "0000ffe9-0000-1000-8000-00805f9b34fb" }
+    ];
+
+    const CONFIG = {
+      PASSWORD: "2026",
+      COMMANDS: {
+        UNLOCK: new Uint8Array([0x67]),
+        LOCK: new Uint8Array([0xDF]),
+        OPEN_BATTERY: new Uint8Array([0xA5])
+      }
+    };
+
+    let gattDevice = null;
+    let gattServer = null;
+    let commandCharacteristic = null;
+    let isKeyVerified = false;
+
+    const loginView = document.getElementById('login-view');
+    const connectView = document.getElementById('connect-view');
+    const controlsView = document.getElementById('controls-view');
+    const customKeyInput = document.getElementById('custom-key-input');
+    const rawHexInput = document.getElementById('raw-hex-input');
+    const errorMsg = document.getElementById('error-message');
+    const consoleBox = document.getElementById('activity-console');
+    const statusPill = document.getElementById('status-pill');
+    const statusText = document.getElementById('status-text');
+
+    function logToConsole(text, type = '') {
+      const entry = document.createElement('div');
+      entry.className = `console-entry ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+      consoleBox.appendChild(entry);
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
+
+    function showError(msg) { errorMsg.textContent = msg; }
+    function clearError() { errorMsg.textContent = ''; }
+
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearError();
+      if (document.getElementById('password').value === CONFIG.PASSWORD) {
+        loginView.classList.add('hidden');
+        connectView.classList.remove('hidden');
+      } else {
+        showError('Invalid passcode');
+      }
+    });
+
+    function parseBleKey(keyStr) {
+      const cleanKey = keyStr.trim().toLowerCase();
+      if (cleanKey.length === 4) return `0000${cleanKey}-0000-1000-8000-00805f9b34fb`;
+      return cleanKey;
+    }
+
+    document.getElementById('btn-connect').addEventListener('click', async () => {
+      clearError();
+      let optionalServices = PRESETS.map(p => p.service);
+      let customService = null;
+      const customKey = customKeyInput.value.trim();
+
+      if (customKey !== "") {
+        customService = parseBleKey(customKey);
+        optionalServices.push(customService);
+      }
+
+      if (!navigator.bluetooth) {
+        showError('Web Bluetooth API not supported on this browser.');
+        return;
+      }
+
+      try {
+        gattDevice = await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true,
+          optionalServices: optionalServices
+        });
+
+        gattDevice.addEventListener('gattserverdisconnected', onDisconnected);
+        gattServer = await gattDevice.gatt.connect();
+
+        commandCharacteristic = null;
+        isKeyVerified = false;
+
+        connectView.classList.add('hidden');
+        controlsView.classList.remove('hidden');
+
+        consoleBox.innerHTML = '';
+        logToConsole(`Connected: ${gattDevice.name || 'Bluetooth Device'}`);
+        logToConsole("Probing control endpoints...", "warn");
+
+        for (let preset of PRESETS) {
+          try {
+            const service = await gattServer.getPrimaryService(preset.service);
+            commandCharacteristic = await service.getCharacteristic(preset.char);
+            if (commandCharacteristic) {
+              isKeyVerified = true;
+              break;
+            }
+          } catch(e) {}
+        }
+
+        if (isKeyVerified) {
+          statusPill.className = "status-pill verified";
+          statusText.textContent = "Verified Hardware";
+          logToConsole("Control service verified.", "success");
+        } else {
+          statusPill.className = "status-pill unverified";
+          statusText.textContent = "Unverified Device";
+          logToConsole("Connected, but control endpoint is unverified.", "warn");
+          logToConsole("Run endpoint scanner to locate write profiles.", "warn");
+        }
+
+      } catch (err) {
+        showError('Connection failed: ' + err.message);
+      }
+    });
+
+    document.getElementById('btn-inspect').addEventListener('click', async () => {
+      if (!gattServer || !gattServer.connected) {
+        logToConsole("Device disconnected.", "error");
+        return;
+      }
+      logToConsole("Auditing GATT services...", "warn");
+      let validEndpointFound = false;
+
+      try {
+        const services = await gattServer.getPrimaryServices();
+        logToConsole(`Found ${services.length} primary service(s).`);
+        
+        for (let s of services) {
+          logToConsole(`-> Service: ${s.uuid}`);
+          try {
+            const chars = await s.getCharacteristics();
+            for (let c of chars) {
+              const props = [];
+              if (c.properties.write) props.push("WRITE");
+              if (c.properties.writeWithoutResponse) props.push("NO_RESP");
+              if (c.properties.read) props.push("READ");
+              if (c.properties.notify) props.push("NOTIFY");
+              logToConsole(`   * Char: ${c.uuid} [${props.join(', ')}]`);
+              
+              if (c.properties.write || c.properties.writeWithoutResponse) {
+                if (!commandCharacteristic) {
+                  commandCharacteristic = c;
+                  logToConsole(`   [BOUND ENDPOINT]`, 'success');
+                }
+                validEndpointFound = true;
+              }
+            }
+          } catch (e) {
+            logToConsole(`   * Characteristics restricted.`, 'error');
+          }
+        }
+
+        if (validEndpointFound) {
+          isKeyVerified = true;
+          statusPill.className = "status-pill verified";
+          statusText.textContent = "Verified Hardware";
+          logToConsole("Endpoint verified & bound successfully.", "success");
+        } else {
+          logToConsole("Verification failed: No writable characteristics found.", "error");
+        }
+
+      } catch (e) {
+        logToConsole("Audit failed: " + e.message, "error");
+      }
+    });
+
+    document.getElementById('btn-send-raw').addEventListener('click', async () => {
+      const hexVal = rawHexInput.value.trim().replace(/^0x/, '');
+      if (!hexVal) return;
+      const bytes = new Uint8Array(hexVal.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+      await sendCommand(bytes, 'INJECTED_HEX', `0x${hexVal}`);
+    });
+
+    async function sendCommand(commandData, label, hexStr) {
+      clearError();
+      if (!gattDevice || !gattDevice.gatt.connected) {
+        showError('Device disconnected.');
+        return;
+      }
+      if (!commandCharacteristic) {
+        logToConsole(`Error: Device unverified. No bound target endpoint.`, 'error');
+        return;
+      }
+      try {
+        logToConsole(`Dispatching ${label}: [${hexStr}]...`);
+        await commandCharacteristic.writeValue(commandData);
+        logToConsole(`Command [${label}] acknowledged.`, 'success');
+      } catch (err) {
+        logToConsole(`Transmission failed: ${err.message}`, 'error');
+      }
+    }
+
+    document.getElementById('btn-unlock').addEventListener('click', () => sendCommand(CONFIG.COMMANDS.UNLOCK, 'UNLOCK', '0x67'));
+    document.getElementById('btn-lock').addEventListener('click', () => sendCommand(CONFIG.COMMANDS.LOCK, 'LOCK', '0xDF'));
+    document.getElementById('btn-battery').addEventListener('click', () => sendCommand(CONFIG.COMMANDS.OPEN_BATTERY, 'BATTERY HATCH', '0xA5'));
+
+    document.getElementById('btn-disconnect').addEventListener('click', () => {
+      if (gattDevice && gattDevice.gatt.connected) gattDevice.gatt.disconnect();
+    });
+
+    function onDisconnected() {
+      controlsView.classList.add('hidden');
+      connectView.classList.remove('hidden');
+      isKeyVerified = false;
+      showError('Device link terminated.');
+    }
+  </script>
+</body>
+</html>
